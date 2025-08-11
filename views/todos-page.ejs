@@ -11,13 +11,28 @@
   </head>
   <body>
     <div class="container mt-5">
-      <h1>Daftar Tugas Saya</h1>
-      <p>Ini adalah halaman daftar tugas saya.</p>
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <div>
+          <h1>Daftar Tugas Saya</h1>
+          <p>Ini adalah halaman daftar tugas saya.</p>
+        </div>
+        <div>
+          <a href="/todos/tambah" class="btn btn-success">Tambah Tugas</a>
+        </div>
+      </div>
+
       <% if (todos && todos.length > 0) { %>
       <ul class="list-group">
         <% todos.forEach(function(todo) { %>
-        <li class="list-group-item">
-          ID: <%= todo.id %> Tugas: <%= todo.task %>
+        <li class="list-group-item d-flex justify-content-between align-items-center">
+          <span>
+            ID: <%= todo.id %> | Tugas: <%= todo.task %>
+          </span>
+          <div>
+            <a href="/todos/edit/<%= todo.id %>" class="btn btn-warning btn-sm mr-1">Edit</a>
+            <button class="btn btn-danger btn-sm" onclick="deleteTodo('<%= todo.id %>')">Delete</button>
+
+          </div>
         </li>
         <% }); %>
       </ul>
@@ -26,5 +41,24 @@
       <% } %>
       <a href="/" class="btn btn-primary mt-3">Go to Home</a>
     </div>
+    <script>
+      function deleteTodo(id) {
+        if (!confirm('Hapus tugas ini?')) return;
+        fetch(`/todos/delete/${id}`, {
+          method: 'DELETE'
+        })
+        .then(response => {
+          if (response.ok) {
+            alert('Tugas berhasil dihapus');
+            window.location.reload();
+          } else {
+            alert('Gagal menghapus tugas');
+          }
+        })
+        .catch(err => {
+          alert('Terjadi error: ' + err.message);
+        });
+      }
+    </script>
   </body>
 </html>

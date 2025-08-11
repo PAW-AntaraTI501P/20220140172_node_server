@@ -22,7 +22,7 @@ router.get("/:id", (req, res) => {
 });
 
 // Endpoint untuk menambahkan tugas baru
-router.post("/", (req, res) => {
+router.post("/tambah", (req, res) => {
   const newTodo = {
     id: todos.length + 1,
     task: req.body.task,
@@ -31,8 +31,9 @@ router.post("/", (req, res) => {
   res.status(201).json(newTodo);
 });
 
+
 // Endpoint untuk memperbarui tugas
-router.put("/:id", (req, res) => {
+router.post("/edit/:id", (req, res) => {
   const todo = todos.find((t) => t.id === parseInt(req.params.id));
   if (!todo) return res.status(404).send("Tugas tidak ditemukan");
 
@@ -41,7 +42,7 @@ router.put("/:id", (req, res) => {
 });
 
 // Endpoint untuk menghapus tugas
-router.delete("/:id", (req, res) => {
+router.delete("/delete/:id", (req, res) => {
   const todoIndex = todos.findIndex((t) => t.id === parseInt(req.params.id));
   if (todoIndex === -1) return res.status(404).send("Tugas tidak ditemukan");
 
