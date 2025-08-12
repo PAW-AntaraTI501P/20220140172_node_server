@@ -14,6 +14,17 @@ router.get("/", (req, res) => {
   res.json(todos);
 });
 
+router.get("/tambah", (req, res) => {
+  res.render("tambah", { todo: null });
+});
+
+router.get("/edit/:id", (req, res) => {
+  const todo = todos.find((t) => t.id === parseInt(req.params.id));
+  if (!todo) return res.status(404).send("Tugas tidak ditemukan");
+  res.render("tambah", { todo }); 
+});
+
+
 // Endpoint untuk mendapatkan tugas berdasarkan ID
 router.get("/:id", (req, res) => {
   const todo = todos.find((t) => t.id === parseInt(req.params.id));
