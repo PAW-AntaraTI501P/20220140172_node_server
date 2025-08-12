@@ -1,8 +1,9 @@
 require("dotenv").config();
 const express = require("express");
 const app = express();
-const todoRoutes = require("./routes/todo.js");
+const todoRoutes = require("./routes/tododb.js");
 const { todos } = require("./routes/todo.js"); // Menambahkan ini untuk mengimpor data dummy
+const db = require("./database/db");
 const port = process.env.PORT;
 
 app.use(express.urlencoded({ extended: false }));
@@ -27,6 +28,13 @@ app.get("/contact", (req, res) => {
 // Endpoint untuk mendapatkan data todos
 app.get("/todos-data", (req, res) => {
   res.json(todos); // Mengembalikan data todos dalam format JSON
+});
+
+app.get("/todo-view", (req, res) => {
+  db.query("SELECT * FROM todos", (err, todos) => {
+    if (err) return res.status(500).send("Internal Server Error");
+    res.render("todo", { todos: todos }); 
+  });
 });
 
 app.get("/todos-list", (req, res) => {
