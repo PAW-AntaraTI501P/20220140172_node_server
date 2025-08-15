@@ -1,49 +1,47 @@
-// todo.js
 const express = require("express");
 const router = express.Router();
 
-
 // Data dummy
 let todos = [
-  { id: 1, task: "Belajar Node.js", },
-  { id: 2, task: "Membuat API", },
+  { id: 1, task: "Belajar Node.js" },
+  { id: 2, task: "Membuat API" },
 ];
 
-// Endpoint untuk mendapatkan semua tugas
-router.get("/", (req, res) => {
-  res.json(todos);
-});
-
+// Halaman tambah todo
 router.get("/tambah", (req, res) => {
   res.render("tambah", { todo: null });
 });
 
+// Halaman edit todo
 router.get("/edit/:id", (req, res) => {
   const todo = todos.find((t) => t.id === parseInt(req.params.id));
   if (!todo) return res.status(404).send("Tugas tidak ditemukan");
-  res.render("tambah", { todo }); 
+  res.render("tambah", { todo });
 });
 
+// Endpoint: semua todos
+router.get("/", (req, res) => {
+  res.json(todos);
+});
 
-// Endpoint untuk mendapatkan tugas berdasarkan ID
+// Endpoint: todo by ID
 router.get("/:id", (req, res) => {
   const todo = todos.find((t) => t.id === parseInt(req.params.id));
   if (!todo) return res.status(404).send("Tugas tidak ditemukan");
   res.json(todo);
 });
 
-// Endpoint untuk menambahkan tugas baru
+// Tambah todo baru
 router.post("/tambah", (req, res) => {
   const newTodo = {
-    id: todos.length + 1,
+    id: todos.length > 0 ? todos[todos.length - 1].id + 1 : 1,
     task: req.body.task,
   };
   todos.push(newTodo);
   res.status(201).json(newTodo);
 });
 
-
-// Endpoint untuk memperbarui tugas
+// Edit todo
 router.post("/edit/:id", (req, res) => {
   const todo = todos.find((t) => t.id === parseInt(req.params.id));
   if (!todo) return res.status(404).send("Tugas tidak ditemukan");
@@ -52,15 +50,15 @@ router.post("/edit/:id", (req, res) => {
   res.json(todo);
 });
 
-// Endpoint untuk menghapus tugas
+// Hapus todo
 router.delete("/delete/:id", (req, res) => {
-  const todoIndex = todos.findIndex((t) => t.id === parseInt(req.params.id));
-  if (todoIndex === -1) return res.status(404).send("Tugas tidak ditemukan");
+  const index = todos.findIndex((t) => t.id === parseInt(req.params.id));
+  if (index === -1) return res.status(404).send("Tugas tidak ditemukan");
 
-  todos.splice(todoIndex, 1);
+  todos.splice(index, 1);
   res.status(204).send();
 });
 
+// Export router + data
+router.todos = todos;
 module.exports = router;
-// Tambahkan ini untuk mengekspor data todos juga
-module.exports.todos = todos;
