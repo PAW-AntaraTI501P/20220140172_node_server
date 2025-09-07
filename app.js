@@ -6,13 +6,18 @@ const db = require("./database/db.js");
 const todoDBRoutes = require("./routes/tododb.js"); // untuk DB
 const todoRoutes = require("./routes/todo.js"); // untuk dummy
 const { todos } = require("./routes/todo.js");
+const authRoutes = require("./routes/auth.js");
+const authMiddleware = require("./middleware/auth.js");
 
 const app = express();
+const cors = require("cors");
 const port = process.env.PORT;
 
 // Set EJS sebagai view engine
 app.set("view engine", "ejs");
 app.set("layout", "layouts/main-layout");
+
+app.use(cors()); 
 
 // Middleware
 app.use(expressLayout);
@@ -21,8 +26,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(methodOverride("_method"));
 
 // Routes 
-app.use("/todosdb", todoDBRoutes);  
 app.use("/todos", todoRoutes);  
+app.use("/api/auth", authRoutes); 
+app.use("/api/todosdb", authMiddleware, todoDBRoutes); 
 
 // Halaman Home
 app.get("/", (req, res) => {
